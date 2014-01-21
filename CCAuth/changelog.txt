@@ -1,5 +1,9 @@
 Changelog for CCAuth by CubieX
 ------------------------------
 
+V.0.0.2
+- blocked some functions if server is not in online-mode:true to avoid wrong UUID entries.
+  (In offline-mode the delivered number is the hash checksum of a players name instead of his Mojang UUID)
+
 V.0.0.1
 - Initial Alpha version

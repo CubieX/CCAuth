@@ -1,5 +1,6 @@
 package com.github.CubieX.CCAuth.CmdHandler;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,15 @@ public class CCAactivationCmdHandler implements CommandExecutor
                // ACTIVATE using forum password ======================================================
                if(sender.isOp() || sender.hasPermission("ccauth.use"))
                {
-                  httpHandler.httpRegisterUserAsync(player, args[0], args[1]);
+                  if(Bukkit.getOnlineMode())
+                  {
+                     httpHandler.httpRegisterUserAsync(player, args[0], args[1]);
+                  }
+                  else
+                  {
+                     player.sendMessage(CCAuth.logPrefix + "§4Der Server laeuft momentan im Offline-Mode.\n" +
+                           "Aktivierung ist nur im Online-Mode moeglich!");
+                  }
                }
             }
             else

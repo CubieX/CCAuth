@@ -96,31 +96,39 @@ public class CCAccaCmdHandler implements CommandExecutor
             if (args[0].equalsIgnoreCase("verify"))
             {
                if(sender.hasPermission("ccauth.use"))
-               {                  
-                  OfflinePlayer checkedPlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
-                  String playerUUID = "";
+               {
+                  if(Bukkit.getOnlineMode())
+                  {          
+                     OfflinePlayer checkedPlayer = Bukkit.getServer().getOfflinePlayer(args[1]);
+                     String playerUUID = "";
 
-                  if(checkedPlayer.isOnline())
-                  {
-                     if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Bukkit...");}
-                     playerUUID = plugin.getUUIDbyBukkit(args[1]);
-
-                     if(cHandler.getPlayerListFile().isSet("uuids." + playerUUID + ".forumUserName"))
+                     if(checkedPlayer.isOnline())
                      {
-                        String playerName = cHandler.getPlayerListFile().getString("uuids." + playerUUID + ".forumUserName");
-                        sender.sendMessage("§f" + checkedPlayer.getName() + "§a ist im Forum unter dem Namen §f" + playerName + "§a registriert.\n§a" +
-                              "Mojang UUID: §f" + playerUUID);
+                        if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Bukkit...");}
+                        playerUUID = plugin.getUUIDbyBukkit(args[1]);
+
+                        if(cHandler.getPlayerListFile().isSet("uuids." + playerUUID + ".forumUserName"))
+                        {
+                           String playerName = cHandler.getPlayerListFile().getString("uuids." + playerUUID + ".forumUserName");
+                           sender.sendMessage("§f" + checkedPlayer.getName() + "§a ist im Forum unter dem Namen §f" + playerName + "§a registriert.\n§a" +
+                                 "Mojang UUID: §f" + playerUUID);
+                        }
+                        else
+                        {
+                           sender.sendMessage("§f" + checkedPlayer.getName() + "§e ist nicht im Forum registriert.\n" +
+                                 "Mojang UUID: §f" + playerUUID);
+                        }
                      }
                      else
                      {
-                        sender.sendMessage("§f" + checkedPlayer.getName() + "§e ist nicht im Forum registriert.\n" +
-                              "Mojang UUID: §f" + playerUUID);
+                        if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Mojang server and checking player registration in configured forum DB...");}
+                        plugin.isPlayerRegisteredInForum(sender, checkedPlayer.getName()); // will send message to querying player                     
                      }
                   }
                   else
                   {
-                     if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Mojang server and checking player registration in configured forum DB...");}
-                     plugin.isPlayerRegisteredInForum(sender, checkedPlayer.getName()); // will send message to querying player                     
+                     player.sendMessage(CCAuth.logPrefix + "§4Der Server laeuft momentan im Offline-Mode.\n" +
+                           "Die UUID kann nur im Online-Mode angefordert werden!");
                   }
                }
 
