@@ -1,0 +1,25 @@
+name: CCAuth
+main: com.github.CubieX.CCAuth.CCAuth
+author: CubieX
+softdepend: [PermissionsEx, zPermissions, bPermissions, PermissionsBukkit]
+version: 0.0.1
+description: Validate player by forum account on remote DB
+
+commands:
+    cca:
+      aliases: [acc, account]
+      description: Admin functions
+      usage: /cca version | reload | help | verify <player>
+    activate:
+      description: Player functions
+      usage: /activate <forum password>
+
+permissions:
+    ccauth.use:
+        description: Use normal commands
+        default: op
+    ccauth.admin:
+        description: Allows use of all commands and effects
+        default: op
+        children:
+          ccauth.use: true
