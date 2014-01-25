@@ -40,7 +40,7 @@ public class CCAactivationCmdHandler implements CommandExecutor
                {
                   if(Bukkit.getOnlineMode())
                   {
-                     httpHandler.httpRegisterUserAsync(player, args[0], args[1]);
+                     httpHandler.httpActivateUserAsync(player, args[0], args[1]);
                   }
                   else
                   {
@@ -63,7 +63,7 @@ public class CCAactivationCmdHandler implements CommandExecutor
             return false;
          }                
 
-      }         
+      }
       return false; // if false is returned, the help for the command stated in the plugin.yml will be displayed to the player
    }
 }

@@ -91,4 +91,19 @@ public class CCASchedulerHandler
          }
       });
    }
+   
+   public void sendMessageDelayed(final Player player, final String message, long delaySeconds)
+   {
+      plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+      {
+         @Override
+         public void run()
+         {
+            if((null != player) && (player.isOnline()))
+            {
+               player.sendMessage(message);  
+            }
+         }
+      }, 20L * delaySeconds); // 20 * delay in seconds ticks delay
+   }
 }

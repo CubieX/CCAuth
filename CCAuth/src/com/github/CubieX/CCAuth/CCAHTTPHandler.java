@@ -52,7 +52,8 @@ public class CCAHTTPHandler
       }
    }
 
-   public void httpRegisterUserAsync(final Player player, final String encryptedForumUserName, final String encryptedForumPass)
+   // activate minecraft player by bundling his UUID with his forum name
+   public void httpActivateUserAsync(final Player player, final String encryptedForumUserName, final String encryptedForumPass)
    {
       if((null == player) || (!player.isOnline()))
       {
@@ -64,11 +65,11 @@ public class CCAHTTPHandler
          @Override
          public void run()
          {
-            String targetURL = CCAuth.scriptURL;
+            String targetURL = CCAuth.verifyScriptURL;
             String urlParameters = "";            
             URL url;
             HttpURLConnection connection = null;
-            
+
             //if(CCAuth.debug){CCAuth.log.info("PLUGIN: Decrypted PW: " + decrypt(encryptedForumPass) + " -> Encrypted again (HEX padded): " + encryptedForumPass);}
 
             if((null != encryptedForumUserName) && (null != encryptedForumPass) && (null != player))
@@ -76,7 +77,7 @@ public class CCAHTTPHandler
                urlParameters = "?u=" + encryptedForumUserName +
                      "&p=" + encryptedForumPass; // AES-128 encrypted as HEX string. No URLEncoding, because HEX is web-save.
 
-               if(CCAuth.debug){CCAuth.log.info("PLUGIN Request: " + CCAuth.scriptURL + urlParameters);}
+               if(CCAuth.debug){CCAuth.log.info("PLUGIN Request: " + CCAuth.verifyScriptURL + urlParameters);}
             }
             else
             {
@@ -128,6 +129,101 @@ public class CCAHTTPHandler
                         "Bitte gib das Forenpasswort an, bzw. erstelle zuerst\n" +
                         "einen Account auf §f" + CCAuth.forumURL + "\n" +
                         "§eDanach kannst du dich hier freischalten.");
+               }
+            }
+            catch (Exception e)
+            {
+               schedHandler.sendSyncMessage(player, "§cFehler beim Senden der HTTP request fuer die Freischaltung!");
+               e.printStackTrace();               
+            }
+            finally
+            {
+               if(connection != null)
+               {
+                  connection.disconnect();
+               }
+            }
+         }
+      });
+   }
+
+   // create new forum user
+   public void httpRegisterUserAsync(final Player player, final String encryptedForumUserName, final String encryptedForumPass, final String encryptedEmail)
+   {
+      if((null == player) || (!player.isOnline()))
+      {
+         return;
+      }
+
+      plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable()
+      {
+         @Override
+         public void run()
+         {
+            String targetURL = CCAuth.createUserScriptURL;
+            String urlParameters = "";            
+            URL url;
+            HttpURLConnection connection = null;
+
+            if((null != encryptedForumUserName)
+                  && (null != encryptedForumPass)
+                  && (null != encryptedEmail)
+                  && (null != player))
+            {
+               urlParameters = "?u=" + encryptedForumUserName +
+                     "&p=" + encryptedForumPass +
+                     "&e=" + encryptedEmail; // AES-128 encrypted as HEX string. No URLEncoding, because HEX is web-save.
+
+               if(CCAuth.debug){CCAuth.log.info("PLUGIN Request: " + CCAuth.createUserScriptURL + urlParameters);}
+            }
+            else
+            {
+               player.sendMessage("§cFehler beim Vorbereiten der HTTP Anfrage fuer die Registrierung!\n" +
+                     "Bitte melde das einem Admin!");
+               return;
+            }
+
+            try
+            {
+               //Create connection               
+               url = new URL(targetURL + urlParameters);
+               connection = (HttpURLConnection)url.openConnection(); // will execute the request
+               connection.setRequestMethod("GET");
+
+               connection.setUseCaches (false);
+               connection.setDoInput(true);
+               connection.setDoOutput(true);
+
+               //Get Response 
+               InputStream is = connection.getInputStream();
+               BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+               String line = "";
+               StringBuffer response = new StringBuffer(); 
+
+               while((line = rd.readLine()) != null)
+               {
+                  response.append(line); // only player name gets sent, so no multi-line response
+                  //response.append('\r');
+                  //response.append(' ');
+               }
+               
+               String resp = response.toString().trim();
+               rd.close();
+
+               if(CCAuth.debug){CCAuth.log.info("PHP Response: " + resp);}
+
+               if(!resp.isEmpty())
+               {
+                  // register player with UUID and forum name in playerFile
+                  cHandler.getPlayerListFile().set("uuids." + plugin.getUUIDbyBukkit(player.getName()) + ".forumUserName", response.toString().trim());
+                  cHandler.savePlayerListFile();
+
+                  plugin.sendSyncChatMessage(player, "§aForen-Account §f" + resp + " §aerstellt!\n" +
+                        "Du bist jetzt freigeschaltet. Viel Spass auf unserem Server!");
+               }
+               else
+               {
+                  plugin.sendSyncChatMessage(player, "§eDer gewaehlte Name ist schon vergeben!"); // may also be the eMail address, but this is unlikely
                }
             }
             catch (Exception e)

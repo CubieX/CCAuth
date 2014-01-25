@@ -34,7 +34,8 @@ public class CCAccaCmdHandler implements CommandExecutor
       // add all available commands here      
       helpList.add("§a" + "Farben: §aJeder §f- §cAdmins");
       helpList.add("§f" + "=============== Befehle ===============");
-      helpList.add("§a" + "/activate <Foren-Passwort> - Spieler freischalten");
+      helpList.add("§a" + "/register <Freischaltcode> <Foren-Name> <Foren-Passwort> <Foren-Passwort> <eMail> - Spieler registrieren");
+      helpList.add("§a" + "/activate <Foren-Name> <Foren-Passwort> - Spieler freischalten");
       helpList.add("§a" + "/cca help - Dieses Hilfemenue");
       helpList.add("§a" + "/cca verifiy <Spielername> - Pruefen welcher Foren-User zum Spieler gehoert");
       helpList.add("§a" + "/cca version - Version des Plugins ausgeben");

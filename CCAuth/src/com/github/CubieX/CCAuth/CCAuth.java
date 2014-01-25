@@ -26,6 +26,7 @@ import com.edawg878.identifier.IdentifierAPI;
 import com.github.CubieX.CCAuth.CCAuth;
 import com.github.CubieX.CCAuth.CmdHandler.CCAccaCmdHandler;
 import com.github.CubieX.CCAuth.CmdHandler.CCAactivationCmdHandler;
+import com.github.CubieX.CCAuth.CmdHandler.CCAregisterCmdHandler;
 
 public class CCAuth extends JavaPlugin
 {
@@ -34,7 +35,8 @@ public class CCAuth extends JavaPlugin
    public static final int MAX_RETRIEVAL_TIME = 2000;  // max time in ms to wait for an async PlayerUUID request to deliver its result
    // This prevents async task jam in case HTTP is unreachable or connection is very slow   
    private CCAccaCmdHandler ccaComHandler = null;
-   private CCAactivationCmdHandler registerComHandler = null;
+   private CCAactivationCmdHandler activateComHandler = null;
+   private CCAregisterCmdHandler registerComHandler = null;
    private CCAConfigHandler cHandler = null;
    private CCAHTTPHandler httpHandler = null;
    private CCAEntityListener eListener = null;
@@ -45,9 +47,11 @@ public class CCAuth extends JavaPlugin
    // config values
    public static boolean debug = false;
    public static String forumURL = "";
+   public static String activationCode = ""; // Code to activate player (found in forum or in new players in-game parcour)
 
    // HTTP GET request
-   static String scriptURL = " ";           // main URL of HTTP gateway to send the request to
+   static String verifyScriptURL = " ";          // URL of HTTP gateway to send the request to (http://server/script.php)
+   static String createUserScriptURL = " "; // URL of HTTP gateway to send the request to (http://server/script.php)
    // AES config
    static String secretKey = "01234567890ABCDE"; // must have exactly 16 HEX chars (AES 128) or optional 32 HEX chars (AES 256)
 
@@ -74,11 +78,13 @@ public class CCAuth extends JavaPlugin
       identAPI = new IdentifierAPI(); // FIXME ins Plugin includen oder so machen, dass Bukkit sie findet beim start?? (lib-Verzeichnis z.B.)???
       schedHandler = new CCASchedulerHandler(this, cHandler, identAPI);
       httpHandler = new CCAHTTPHandler(this, schedHandler, cHandler, identAPI);
-      eListener = new CCAEntityListener(this);            
+      eListener = new CCAEntityListener(this, cHandler, schedHandler);            
       ccaComHandler = new CCAccaCmdHandler(this, cHandler, httpHandler);
-      registerComHandler = new CCAactivationCmdHandler(this, httpHandler);      
+      activateComHandler = new CCAactivationCmdHandler(this, httpHandler);
+      registerComHandler = new CCAregisterCmdHandler(this, httpHandler);
       getCommand("cca").setExecutor(ccaComHandler);
-      getCommand("activate").setExecutor(registerComHandler);
+      getCommand("activate").setExecutor(activateComHandler);
+      getCommand("register").setExecutor(registerComHandler);
 
       log.info(logPrefix + " version " + getDescription().getVersion() + " is enabled!");
    }   
@@ -107,9 +113,11 @@ public class CCAuth extends JavaPlugin
 
       if(getConfig().isSet("debug")){debug = getConfig().getBoolean("debug");}else{invalid = true;}
       if(getConfig().isSet("forumURL")){forumURL = getConfig().getString("forumURL");}else{invalid = true;}
+      if(getConfig().isSet("activationCode")){activationCode = getConfig().getString("activationCode");}else{invalid = true;}
 
       // HTTP request
-      if(getConfig().isSet("scriptURL")){scriptURL = getConfig().getString("scriptURL");}else{invalid = true;}
+      if(getConfig().isSet("verifyScriptURL")){verifyScriptURL = getConfig().getString("verifyScriptURL");}else{invalid = true;}
+      if(getConfig().isSet("createUserScriptURL")){createUserScriptURL = getConfig().getString("createUserScriptURL");}else{invalid = true;}
       if(getConfig().isSet("secretKey")){secretKey = getConfig().getString("secretKey");}else{invalid = true;}
 
       if(exceed)
@@ -131,7 +139,7 @@ public class CCAuth extends JavaPlugin
       cHandler = null;
       eListener = null;
       ccaComHandler = null;
-      registerComHandler = null;
+      activateComHandler = null;
       httpHandler = null;
       schedHandler = null;
       log.info(logPrefix + "version " + getDescription().getVersion() + " is disabled!");

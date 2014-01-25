@@ -1,6 +1,13 @@
 Changelog for CCAuth by CubieX
 ------------------------------
 
+V.0.0.3
+- added notification if player joins and has not yet activated his server account
+  by providing his forum credentials
+  with /activate FORUMNAME FORUMPASS
+- added command REGISTER to create a new forum account for player
+  and activate him using the activation code found ingame or in forum
+
 V.0.0.2
 - blocked some functions if server is not in online-mode:true to avoid wrong UUID entries.
   (In offline-mode the delivered number is the hash checksum of a players name instead of his Mojang UUID)

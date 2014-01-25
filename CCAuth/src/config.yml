@@ -1,3 +1,6 @@
+##############
+# General
+##############
 # Do NOT change the config version!
 config_version: 1
 # Set locale for user dialog messages
@@ -5,10 +8,15 @@ language: de
 # Enable debug output
 debug: false
 #
-# HTTP Request options
+#####################################
+# HTTP Request and security options
+#####################################
 #
-# URL of PHP script on remote host to execute DB query
-scriptURL: 'http://myRemoteServersURL/my/script.php/'
+# URL of PHP script on remote host to execute DB query to verify player as forum user
+verifyScriptURL: 'http://myRemoteServersURL/myUserVerificationScript.php'
+#
+# URL of PHP script on remote host to trigger forum user creation via forum API
+createUserScriptURL: 'http://myRemoteServersURL/myUserCreateScript.php'
 #
 # Secret key for encryption/decryption of transmitted/received HTTP data
 # from and to remote PHP script. (exactly 16 HEX chars)
@@ -18,3 +26,11 @@ secretKey: '01234567890ABCDE'
 # Forum URL to let players register
 #
 forumURL: 'http://www.myForumURL.com'
+#
+#######################
+# Registration options
+#######################
+#
+# Code to activate a player (found in in-game parcour or on website)
+# Use '' empty string to deactivate
+activationCode: ''
