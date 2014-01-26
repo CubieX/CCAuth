@@ -12,13 +12,19 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+
 import org.springframework.web.util.HtmlUtils;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import com.edawg878.identifier.IdentifierAPI;
 
 public class CCAHTTPHandler
@@ -77,7 +83,7 @@ public class CCAHTTPHandler
                urlParameters = "?u=" + encryptedForumUserName +
                      "&p=" + encryptedForumPass; // AES-128 encrypted as HEX string. No URLEncoding, because HEX is web-save.
 
-               if(CCAuth.debug){CCAuth.log.info("PLUGIN Request: " + CCAuth.verifyScriptURL + urlParameters);}
+               if(CCAuth.debug){CCAuth.log.info("DEBUG PLUGIN Request: " + CCAuth.verifyScriptURL + urlParameters);}
             }
             else
             {
@@ -112,7 +118,7 @@ public class CCAHTTPHandler
 
                rd.close();
 
-               if(CCAuth.debug){CCAuth.log.info("PHP Response: " + response.toString().trim());}
+               if(CCAuth.debug){CCAuth.log.info("DEBUG PHP Response: " + response.toString().trim());}
 
                if(!response.toString().isEmpty())
                {
@@ -148,6 +154,7 @@ public class CCAHTTPHandler
    }
 
    // create new forum user
+   @SuppressWarnings("deprecation")
    public void httpRegisterUserAsync(final Player player, final String encryptedForumUserName, final String encryptedForumPass, final String encryptedEmail)
    {
       if((null == player) || (!player.isOnline()))
@@ -174,7 +181,7 @@ public class CCAHTTPHandler
                      "&p=" + encryptedForumPass +
                      "&e=" + encryptedEmail; // AES-128 encrypted as HEX string. No URLEncoding, because HEX is web-save.
 
-               if(CCAuth.debug){CCAuth.log.info("PLUGIN Request: " + CCAuth.createUserScriptURL + urlParameters);}
+               if(CCAuth.debug){CCAuth.log.info("DEBUG PLUGIN Request: " + CCAuth.createUserScriptURL + urlParameters);}
             }
             else
             {
@@ -206,11 +213,11 @@ public class CCAHTTPHandler
                   //response.append('\r');
                   //response.append(' ');
                }
-               
+
                String resp = response.toString().trim();
                rd.close();
 
-               if(CCAuth.debug){CCAuth.log.info("PHP Response: " + resp);}
+               if(CCAuth.debug){CCAuth.log.info("DEBUG PHP Response: " + resp);}
 
                if(!resp.isEmpty())
                {
@@ -218,8 +225,20 @@ public class CCAHTTPHandler
                   cHandler.getPlayerListFile().set("uuids." + plugin.getUUIDbyBukkit(player.getName()) + ".forumUserName", response.toString().trim());
                   cHandler.savePlayerListFile();
 
-                  plugin.sendSyncChatMessage(player, "§aForen-Account §f" + resp + " §aerstellt!\n" +
-                        "Du bist jetzt freigeschaltet. Viel Spass auf unserem Server!");
+                  ItemStack forumRegisterPayItemStack =  new ItemStack(Material.DIAMOND, 1);
+                  HashMap<Integer, ItemStack> couldNotRemove = player.getInventory().removeItem(forumRegisterPayItemStack);
+                  player.updateInventory();
+
+                  if(couldNotRemove.isEmpty())
+                  {
+                     plugin.sendSyncChatMessage(player, "§aForen-Account §f" + resp + " §aerstellt!\n" +
+                           "Link zum Forum: §f" + CCAuth.forumURL);
+                  }
+                  else
+                  {
+                     player.sendMessage("§cFehler beim Entfernen des Bezahl-Items fuer die Forenaccount-Erstellung!" +
+                           "Bitte melde das einem Admin!");
+                  }                  
                }
                else
                {

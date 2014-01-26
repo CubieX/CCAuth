@@ -1,10 +1,14 @@
 package com.github.CubieX.CCAuth.CmdHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import com.github.CubieX.CCAuth.CCAConfigHandler;
 import com.github.CubieX.CCAuth.CCAHTTPHandler;
 import com.github.CubieX.CCAuth.CCAuth;
 
@@ -12,15 +16,17 @@ public class CCAregisterCmdHandler implements CommandExecutor
 {
    private CCAuth plugin = null;
    private CCAHTTPHandler httpHandler = null;
+   private CCAConfigHandler cHandler = null;
    private String wrongParamCountMsg = "§eFalsche Parameteranzahl.\n" +
          "Bitte in der Form:\n" +
          "§f'/register Freischaltcode Foren-Name Foren-Passwort Foren-Passwort eMail\n" +
          "§eeingeben!";
 
-   public CCAregisterCmdHandler(CCAuth plugin, CCAHTTPHandler httpHandler) 
+   public CCAregisterCmdHandler(CCAuth plugin, CCAHTTPHandler httpHandler, CCAConfigHandler cHandler) 
    {
       this.plugin = plugin;
       this.httpHandler = httpHandler;
+      this.cHandler = cHandler;
    }
 
    @Override
@@ -33,61 +39,34 @@ public class CCAregisterCmdHandler implements CommandExecutor
          player = (Player) sender;
       }
 
-      // TODO implement ingame-forum registration. See: webserver\www\board\admin\sources\base\ipsMember.php
-      // and http://www.invisionpower.com/support/guides/_/advanced-and-developers/api-methods/ipsmember-r200
-      // and http://stackoverflow.com/questions/5389619/calling-php-file-fron-another-php-file-while-passing-arguments
-      // players should do the parcour and then when the retrieved the secret code, enter:
-      // ./activate CODE DESIRED_FORUMNAME FORUM_PASS FORUM_PASS EMAIL EMAIL
       if (cmd.getName().equalsIgnoreCase("register"))
       {
-         if(args.length == 5) // activationCode, forumUserName, forumPass, forumPass, eMail (format checks already done in CommandPreProccessEvent)
+         if(args.length == 4) // forumUserName, forumPass, forumPass, eMail (format checks already done in CommandPreProccessEvent)
          {
             if(null != player)
             {
                // REGISTER player in forum (creates new forum account) ======================================================
-               if(sender.isOp() || sender.hasPermission("ccauth.use"))
+               if(player.isOp() || player.hasPermission("ccauth.use"))
                {
                   if(Bukkit.getOnlineMode())
                   {
-                     if(args[0].equals(CCAuth.activationCode))
+                     if(!cHandler.getPlayerListFile().isSet("uuids." + plugin.getUUIDbyBukkit(player.getName()) + ".forumUserName"))
                      {
-                        httpHandler.httpRegisterUserAsync(player, args[1], args[2], args[4]);
+                        if(player.getInventory().containsAtLeast(new ItemStack(Material.DIAMOND), 1))
+                        {
+                           httpHandler.httpRegisterUserAsync(player, args[0], args[1], args[3]);
+                        }
+                        else
+                        {
+                           player.sendMessage("§eDu benoetigst §f1x " + CCAuth.forumRegisterPayItem + 
+                                 "§e um einen Forenaccount zu erstellen.");
+                        }
                      }
                      else
                      {
-                        player.sendMessage("§eDer eingegebene Freischalt-Code ist nicht korrekt!");
-                     }
-                  }
-                  else
-                  {
-                     player.sendMessage(CCAuth.logPrefix + "§4Der Server laeuft momentan im Offline-Mode.\n" +
-                           "Aktivierung ist nur im Online-Mode moeglich!");
-                  }
-               }
-            }
-            else
-            {
-               sender.sendMessage(CCAuth.logPrefix + "This command is only usable ingame!");
-            }
-
-            return true;
-         }
-         else if(args.length == 4) // forumUserName, forumPass, forumPass, eMail (format checks already done in CommandPreProccessEvent)
-         {
-            if(null != player)
-            {
-               // REGISTER player in forum (creates new forum account) ======================================================
-               if(sender.isOp() || sender.hasPermission("ccauth.use"))
-               {
-                  if(Bukkit.getOnlineMode())
-                  {
-                     if(CCAuth.activationCode.equals("")) // activationCode deactivated in config?
-                     {
-                        httpHandler.httpRegisterUserAsync(player, args[0], args[1], args[3]);
-                     }
-                     else
-                     {
-                        player.sendMessage(wrongParamCountMsg);
+                        player.sendMessage("§eDu bist bereits mit dem Namen §f" +
+                              cHandler.getPlayerListFile().getString("uuids." + plugin.getUUIDbyBukkit(player.getName()) +
+                                    ".forumUserName") + "§e im Forum registriert!");
                      }
                   }
                   else

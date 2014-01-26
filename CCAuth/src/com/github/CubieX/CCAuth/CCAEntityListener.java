@@ -69,53 +69,15 @@ public class CCAEntityListener implements Listener
       {
          String[] cmdTokens = e.getMessage().split(" ");
 
-         if(cmdTokens.length == 6)
-         {
-            if(cmdTokens[3].equals(cmdTokens[4])) // are both entered passwords identical?
-            {
-               if(validEmailFormat(cmdTokens[5])) // valid eMail address format?
-               {
-                  // Encrypt all entries to avoid logging or showing these data tokens in plain text
-                  String encryptedForumUserName = plugin.encrypt(plugin.escapeHTML(cmdTokens[2]));
-                  String encryptedForumPW = plugin.encrypt(plugin.escapeHTML(cmdTokens[3]));
-                  String encryptedEmail = plugin.encrypt(cmdTokens[5]);
-
-                  if ((null != encryptedForumUserName) && (encryptedForumUserName.length() > 0)
-                        && (null != encryptedForumPW) && (encryptedForumPW.length() > 0)
-                        && (null != encryptedEmail) && (encryptedEmail.length() > 0))
-                  {
-                     e.setMessage(cmdTokens[0] + " " + cmdTokens[1] + " " + encryptedForumUserName + " " + encryptedForumPW +
-                           " " + encryptedForumPW + " " + encryptedEmail);
-                     if(CCAuth.debug){e.getPlayer().sendMessage("§aRegistrier-Daten wurden verschluesselt");}
-                  }
-                  else
-                  {
-                     e.setCancelled(true);
-                     e.getPlayer().sendMessage("§cKommando blockiert. Fehler beim Verschluesseln der Login-Daten.\n" +
-                           "Bitte melde das einem Admin!");
-                  }
-               }
-               else
-               {
-                  e.setCancelled(true);
-                  e.getPlayer().sendMessage("§eFehler: Ungueltiges eMail-Format.");
-               }
-            }
-            else
-            {
-               e.setCancelled(true);
-               e.getPlayer().sendMessage("§eFehler: Die beiden Passwoerter stimmen nicht ueberein.");
-            }
-         }
-         else if(cmdTokens.length == 5) // maybe activationCode is deactivated in config
+         if(cmdTokens.length == 5) // maybe activationCode is deactivated in config
          {
             if(cmdTokens[2].equals(cmdTokens[3])) // are both entered passwords identical?
             {
                if(validEmailFormat(cmdTokens[4])) // valid eMail address format?
                {
                   // Encrypt all entries to avoid logging or showing these data tokens in plain text
-                  String encryptedForumUserName = plugin.encrypt(plugin.escapeHTML(cmdTokens[1]));
-                  String encryptedForumPW = plugin.encrypt(plugin.escapeHTML(cmdTokens[2]));
+                  String encryptedForumUserName = plugin.encrypt(cmdTokens[1]); // no HTML escaping for name and PW because forum takes care oon account creation
+                  String encryptedForumPW = plugin.encrypt(cmdTokens[2]);
                   String encryptedEmail = plugin.encrypt(cmdTokens[4]);
 
                   if ((null != encryptedForumUserName) && (encryptedForumUserName.length() > 0)
@@ -167,7 +129,7 @@ public class CCAEntityListener implements Listener
          e.getPlayer().sendMessage(CCAuth.logPrefix + "§cChat-Ausgabe wurde unterdrueckt!\n" +
                "Bitte achte darauf das Kommando mit '/' zu verwenden! (/activate ...)");
       }
-      
+
       if(e.getMessage().startsWith("register"))
       {
          // player accidently forgot the "/" command prefix, so prevent the message to be sent
@@ -184,9 +146,9 @@ public class CCAEntityListener implements Listener
    {
       if(!cHandler.getPlayerListFile().isSet("uuids." + plugin.getUUIDbyBukkit(e.getPlayer().getName()) + ".forumUserName"))
       {
-         String message = "§eVerwende §f/activate FORENNAME FORENPASSWORT\n" +
-               "§eum deinen Server-Account zu aktivieren!\n" + 
-               "Link zum Forum: §f" + CCAuth.forumURL;
+         String message = "§eVerwende §f/register FORENNAME PASSWORT PASSWORT EMAIL\n" +
+               "§eum einen Foren-Account zu erstellen. Du benoetigst ausserdem\n" +
+               "§f 1x " + CCAuth.forumRegisterPayItem + "§e.";
          schedHandler.sendMessageDelayed(e.getPlayer(), message, 5L);
       }
    }

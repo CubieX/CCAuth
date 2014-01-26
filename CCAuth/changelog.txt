@@ -1,6 +1,11 @@
 Changelog for CCAuth by CubieX
 ------------------------------
 
+V.0.0.5
+- removed activation code handling
+- implemented forum register payment item to pay for creating a forum account
+- added check to prevent multiple forum accounts per UUID to be created
+
 V.0.0.4
 - added new example php files
 

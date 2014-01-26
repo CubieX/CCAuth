@@ -34,12 +34,13 @@ public class CCAccaCmdHandler implements CommandExecutor
       // add all available commands here      
       helpList.add("§a" + "Farben: §aJeder §f- §cAdmins");
       helpList.add("§f" + "=============== Befehle ===============");
-      helpList.add("§a" + "/register <Freischaltcode> <Foren-Name> <Foren-Passwort> <Foren-Passwort> <eMail> - Spieler registrieren");
-      helpList.add("§a" + "/activate <Foren-Name> <Foren-Passwort> - Spieler freischalten");
-      helpList.add("§a" + "/cca help - Dieses Hilfemenue");
-      helpList.add("§a" + "/cca verifiy <Spielername> - Pruefen welcher Foren-User zum Spieler gehoert");
-      helpList.add("§a" + "/cca version - Version des Plugins ausgeben");
-      helpList.add("§c" + "/cca reload - Plugin und Daten neu laden");
+      helpList.add("§a" + "Aliase: acc, account");
+      helpList.add("§a" + "/register <Foren-Name> <Foren-Passwort> <Foren-Passwort> <eMail> §f- Forenaccount erstellen");
+      helpList.add("§a" + "/activate <Foren-Name> <Foren-Passwort> §f- Spieler freischalten");
+      helpList.add("§a" + "/cca help §f- Dieses Hilfemenue");
+      helpList.add("§a" + "/cca verifiy <Spielername> §f- Pruefen welcher Foren-User zum Spieler gehoert");
+      helpList.add("§a" + "/cca version §f- Version des Plugins ausgeben");
+      helpList.add("§c" + "/cca reload §f- Plugin und Daten neu laden");
    }
 
    @Override
@@ -105,7 +106,7 @@ public class CCAccaCmdHandler implements CommandExecutor
 
                      if(checkedPlayer.isOnline())
                      {
-                        if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Bukkit...");}
+                        if(CCAuth.debug){sender.sendMessage("DEBUG Retrieving UUID from Bukkit...");}
                         playerUUID = plugin.getUUIDbyBukkit(args[1]);
 
                         if(cHandler.getPlayerListFile().isSet("uuids." + playerUUID + ".forumUserName"))
@@ -122,7 +123,7 @@ public class CCAccaCmdHandler implements CommandExecutor
                      }
                      else
                      {
-                        if(CCAuth.debug){sender.sendMessage("Retrieving UUID from Mojang server and checking player registration in configured forum DB...");}
+                        if(CCAuth.debug){sender.sendMessage("DEBUG Retrieving UUID from Mojang server and checking player registration in configured forum DB...");}
                         plugin.isPlayerRegisteredInForum(sender, checkedPlayer.getName()); // will send message to querying player                     
                      }
                   }

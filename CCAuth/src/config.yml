@@ -23,14 +23,13 @@ createUserScriptURL: 'http://myRemoteServersURL/myUserCreateScript.php'
 # This MUST match with the secret key used in the remote PHP script!
 secretKey: '01234567890ABCDE'
 #
+##############################
+# Forum Registration options
+##############################
+#
 # Forum URL to let players register
+forumURL: 'http://www.myforumURL.com'
 #
-forumURL: 'http://www.myForumURL.com'
-#
-#######################
-# Registration options
-#######################
-#
-# Code to activate a player (found in in-game parcour or on website)
-# Use '' empty string to deactivate
-activationCode: ''
+# Item to pay for forum registration (player must have this in inventory when issuing /register command)
+# e.g. 'DIAMOND' or every other valid Bukkit Material name. Set to '' to deactivate.
+forumRegisterPayItem: 'DIAMOND'

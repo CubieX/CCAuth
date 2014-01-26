@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +48,7 @@ public class CCAuth extends JavaPlugin
    // config values
    public static boolean debug = false;
    public static String forumURL = "";
-   public static String activationCode = ""; // Code to activate player (found in forum or in new players in-game parcour)
+   public static String forumRegisterPayItem = ""; // Item to pay for forum registration with
 
    // HTTP GET request
    static String verifyScriptURL = " ";          // URL of HTTP gateway to send the request to (http://server/script.php)
@@ -81,7 +82,7 @@ public class CCAuth extends JavaPlugin
       eListener = new CCAEntityListener(this, cHandler, schedHandler);            
       ccaComHandler = new CCAccaCmdHandler(this, cHandler, httpHandler);
       activateComHandler = new CCAactivationCmdHandler(this, httpHandler);
-      registerComHandler = new CCAregisterCmdHandler(this, httpHandler);
+      registerComHandler = new CCAregisterCmdHandler(this, httpHandler, cHandler);
       getCommand("cca").setExecutor(ccaComHandler);
       getCommand("activate").setExecutor(activateComHandler);
       getCommand("register").setExecutor(registerComHandler);
@@ -113,7 +114,21 @@ public class CCAuth extends JavaPlugin
 
       if(getConfig().isSet("debug")){debug = getConfig().getBoolean("debug");}else{invalid = true;}
       if(getConfig().isSet("forumURL")){forumURL = getConfig().getString("forumURL");}else{invalid = true;}
-      if(getConfig().isSet("activationCode")){activationCode = getConfig().getString("activationCode");}else{invalid = true;}
+      
+      if(getConfig().isSet("forumRegisterPayItem"))
+      {
+         forumRegisterPayItem = getConfig().getString("forumRegisterPayItem");
+         
+         if(null == Material.getMaterial(forumRegisterPayItem))
+         {
+            forumRegisterPayItem = "";
+            invalid = true;
+         }
+      }
+      else
+      {
+         invalid = true;
+      }
 
       // HTTP request
       if(getConfig().isSet("verifyScriptURL")){verifyScriptURL = getConfig().getString("verifyScriptURL");}else{invalid = true;}
@@ -273,7 +288,7 @@ public class CCAuth extends JavaPlugin
    {
       return httpHandler.escapeHTML(text);     
    }
-   
+
    /** Get players UUID from Bukkit (use only if player is online)
     * Used for parameters of PHP scripts for example.
     * 
