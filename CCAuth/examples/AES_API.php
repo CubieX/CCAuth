@@ -1,11 +1,5 @@
 <?php
-$encryptedUserName = $_GET['u'];
-$plainUserName = "";
-
-$secret_key = "0123456789abcdef"; 	// SECRET key, same as in RemoteQuery plugin.
-                                    // 16 Bytes means AES-128, 32 Bytes means AES 256. Best given in HEX.
-$cipher     = "rijndael-128";		// the cipher to use. See list below. Must match with plugins cipher scheme.
-
+// Utility functions ================================================
 function pkcs5_pad ($text, $blocksize)
 {
 	$pad = $blocksize - (strlen($text) % $blocksize);
@@ -101,9 +95,9 @@ function cryptare($text, $key, $cipher, $encrypt)
 }
 
 // Use mysqli API to connect to DB
-function sqlGetPlayerData($userName)
+function sqlGetUserData($userName)
 {
-	$select = "SELECT member_id, name, title FROM bb_members WHERE name = '" . $userName . "';";
+	$select = "SELECT name, members_pass_hash, members_pass_salt FROM bb_members WHERE name = '" . $userName . "';";
 	$mysqli = new mysqli("localhost", "dbuser", "dbpass", "database");	
 
 	$result = $mysqli->query($select);
@@ -122,33 +116,12 @@ function sqlGetPlayerData($userName)
 	}
 
 	// OUTPUT results
-	$row = $result->fetch_assoc(); // warning: will move the cursor to next row! Only use for single result.
-	return $row['member_id'] . " " . $row['name'] . " " . $row['title']; // print one line of result directly for console usage
-
+	$row = $result->fetch_assoc(); // warning: will move the cursor to next row!
+	//echo $row['name'] . " " . $row['members_pass_hash'] . " " . $row['members_pass_salt']; // print one line of result directly for console usage
+	
 	/* close connection */
 	$mysqli->close();
+	
+	return $row;
 }
-
-// BEGIN ACTIONS ================================================================
-
-// DEBUG
-/*echo " Calling cryptare in ENcrypt mode...";
-$encryptedTextBIN = cryptare($plainUserName, $secret_key, $cipher, 1); // ENCRYPT
-$encryptedTextHEX = bin2hex($encryptedTextBIN); // convert to HEX to safely send via HTML
-echo " Encrypted Text Original: " . $encryptedTextBIN;
-echo " Encrypted Text HEX (padded): " . $encryptedTextHEX;
-echo " Calling cryptare in DEcrypt mode...";
-$encryptedTextBIN = hex2bin($encryptedTextHEX); // convert back to BIN to input into decryptor
-echo " Encrypted Text converted back from HEX to BIN: " . $encryptedTextBIN;
-$plainUserName = cryptare($encryptedTextBIN, $secret_key, $cipher, 0); // DECRYPT
-echo " Decrypted Text Original: " . $plainUserName;*/
-
-// TEST MD5 for IP board:
-// IPboard password hash formula: $hash = md5( md5( $salt ) . md5( $password ) );
-/*$pwHash = md5('testPass', FALSE);
-$saltHash = md5('testSalt', FALSE);
-$hash = md5($saltHash . $pwHash);
-echo " PHP pwHash: " . $pwHash;
-echo " PHP saltHash: " . $saltHash;
-echo " PHP hash: " . $hash;*/
 ?>

@@ -1,6 +1,9 @@
 Changelog for CCAuth by CubieX
 ------------------------------
 
+V.0.0.4
+- added new example php files
+
 V.0.0.3
 - added notification if player joins and has not yet activated his server account
   by providing his forum credentials
