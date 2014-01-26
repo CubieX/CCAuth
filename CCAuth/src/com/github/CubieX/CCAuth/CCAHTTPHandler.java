@@ -139,7 +139,8 @@ public class CCAHTTPHandler
             }
             catch (Exception e)
             {
-               schedHandler.sendSyncMessage(player, "§cFehler beim Senden der HTTP request fuer die Freischaltung!");
+               schedHandler.sendSyncMessage(player, "§cFehler beim Senden der HTTP request fuer die Freischaltung!\n" +
+                     "Bitte melde das einem Admin!");
                e.printStackTrace();               
             }
             finally
@@ -236,7 +237,7 @@ public class CCAHTTPHandler
                   }
                   else
                   {
-                     player.sendMessage("§cFehler beim Entfernen des Bezahl-Items fuer die Forenaccount-Erstellung!" +
+                     player.sendMessage("§cFehler beim Entfernen des Bezahl-Items fuer die Forenaccount-Erstellung!\n" +
                            "Bitte melde das einem Admin!");
                   }                  
                }
@@ -247,7 +248,8 @@ public class CCAHTTPHandler
             }
             catch (Exception e)
             {
-               schedHandler.sendSyncMessage(player, "§cFehler beim Senden der HTTP request fuer die Freischaltung!");
+               schedHandler.sendSyncMessage(player, "§cFehler beim Senden der HTTP request fuer die Freischaltung!\n" +
+                     "Bitte melde das einem Admin!");
                e.printStackTrace();               
             }
             finally

@@ -13,7 +13,6 @@
  */
 package com.github.CubieX.CCAuth;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Logger;

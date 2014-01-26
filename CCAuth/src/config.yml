@@ -27,7 +27,7 @@ secretKey: '01234567890ABCDE'
 # Forum Registration options
 ##############################
 #
-# Forum URL to let players register
+# Forum URL
 forumURL: 'http://www.myforumURL.com'
 #
 # Item to pay for forum registration (player must have this in inventory when issuing /register command)
