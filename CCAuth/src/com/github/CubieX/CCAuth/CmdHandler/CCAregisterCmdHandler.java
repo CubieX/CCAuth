@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.CubieX.CCAuth.CCAConfigHandler;
@@ -52,13 +53,13 @@ public class CCAregisterCmdHandler implements CommandExecutor
                   {
                      if(!cHandler.getPlayerListFile().isSet("uuids." + plugin.getUUIDbyBukkit(player.getName()) + ".forumUserName"))
                      {
-                        if(player.getInventory().containsAtLeast(new ItemStack(Material.DIAMOND), 1))
+                        if(playerHasNeededForumRegisterPayItems(player.getInventory()))
                         {
                            httpHandler.httpRegisterUserAsync(player, args[0], args[1], args[3]);
                         }
                         else
                         {
-                           player.sendMessage("§eDu benoetigst §f1x " + CCAuth.forumRegisterPayItem + 
+                           player.sendMessage("§eDu benoetigst§f\n" + getForumRegisterPayItemsListForChat() + 
                                  "§e um einen Forenaccount zu erstellen.");
                         }
                      }
@@ -91,5 +92,41 @@ public class CCAregisterCmdHandler implements CommandExecutor
 
       }
       return false; // if false is returned, the help for the command stated in the plugin.yml will be displayed to the player
+   }
+   
+   private String getForumRegisterPayItemsListForChat()
+   {
+      String list = "nichts";
+      
+      if(!CCAuth.forumRegisterPayItems.isEmpty())
+      {
+         list = "";
+         
+         for(String item : CCAuth.forumRegisterPayItems.keySet())
+         {
+            list += CCAuth.forumRegisterPayItems.get(item) + "x " + item + "\n";
+         }
+      }
+      
+      return (list);
+   }
+   
+   private boolean playerHasNeededForumRegisterPayItems(Inventory inv)
+   {
+      boolean res = true;
+      
+      if(!CCAuth.forumRegisterPayItems.isEmpty())
+      {  
+         for(String item : CCAuth.forumRegisterPayItems.keySet())
+         {
+            if(!inv.containsAtLeast(new ItemStack(Material.getMaterial(item)), CCAuth.forumRegisterPayItems.get(item)))
+            {
+               res = false;
+               break;
+            }
+         }
+      }
+      
+      return (res);
    }
 }

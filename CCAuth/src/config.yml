@@ -30,6 +30,11 @@ secretKey: '01234567890ABCDE'
 # Forum URL
 forumURL: 'http://www.myforumURL.com'
 #
-# Item to pay for forum registration (player must have this in inventory when issuing /register command)
-# e.g. 'DIAMOND' or every other valid Bukkit Material name. Set to '' to deactivate.
-forumRegisterPayItem: 'DIAMOND'
+# Items to pay for forum registration (player must have these in inventory when issuing /register command)
+# e.g.
+# DIAMOND:1
+# STONE:1
+# or every other valid Bukkit Material name. Empty the list to deactivate.
+forumRegisterPayItems:
+  STONE: 1
+  WOOD: 1

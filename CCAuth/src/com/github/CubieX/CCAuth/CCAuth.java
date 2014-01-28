@@ -14,6 +14,9 @@
 package com.github.CubieX.CCAuth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -47,7 +50,7 @@ public class CCAuth extends JavaPlugin
    // config values
    public static boolean debug = false;
    public static String forumURL = "";
-   public static String forumRegisterPayItem = ""; // Item to pay for forum registration with
+   public static HashMap<String, Integer> forumRegisterPayItems = new HashMap<String, Integer>(); // Items to pay for forum registration with (Key=Bukkit Material, value = int amount)
 
    // HTTP GET request
    static String verifyScriptURL = " ";          // URL of HTTP gateway to send the request to (http://server/script.php)
@@ -113,15 +116,25 @@ public class CCAuth extends JavaPlugin
 
       if(getConfig().isSet("debug")){debug = getConfig().getBoolean("debug");}else{invalid = true;}
       if(getConfig().isSet("forumURL")){forumURL = getConfig().getString("forumURL");}else{invalid = true;}
-      
-      if(getConfig().isSet("forumRegisterPayItem"))
+
+
+      if(getConfig().contains("forumRegisterPayItems"))
       {
-         forumRegisterPayItem = getConfig().getString("forumRegisterPayItem");
-         
-         if(null == Material.getMaterial(forumRegisterPayItem))
+         Set<String> payItems = getConfig().getConfigurationSection("forumRegisterPayItems").getKeys(false);
+
+         for (String key : payItems)
          {
-            forumRegisterPayItem = "";
-            invalid = true;
+            if(null != Material.getMaterial(key))
+            {
+               if(getConfig().isSet("forumRegisterPayItems." + key))
+               {
+                  forumRegisterPayItems.put(key, getConfig().getInt("forumRegisterPayItems." + key));
+               }
+            }
+            else
+            {
+               invalid = true;
+            }
          }
       }
       else

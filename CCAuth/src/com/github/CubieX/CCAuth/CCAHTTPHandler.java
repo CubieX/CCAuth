@@ -222,15 +222,26 @@ public class CCAHTTPHandler
 
                if(!resp.isEmpty())
                {
+                  boolean successRemoving = true;
+
                   // register player with UUID and forum name in playerFile
                   cHandler.getPlayerListFile().set("uuids." + plugin.getUUIDbyBukkit(player.getName()) + ".forumUserName", response.toString().trim());
                   cHandler.savePlayerListFile();
 
-                  ItemStack forumRegisterPayItemStack =  new ItemStack(Material.DIAMOND, 1);
-                  HashMap<Integer, ItemStack> couldNotRemove = player.getInventory().removeItem(forumRegisterPayItemStack);
+                  for(String item : CCAuth.forumRegisterPayItems.keySet())
+                  {
+                     HashMap<Integer, ItemStack> couldNotRemove =
+                           player.getInventory().removeItem(new ItemStack(Material.getMaterial(item), CCAuth.forumRegisterPayItems.get(item)));
+
+                     if(!couldNotRemove.isEmpty())
+                     {
+                        successRemoving = false;
+                     }
+                  }
+                  
                   player.updateInventory();
 
-                  if(couldNotRemove.isEmpty())
+                  if(successRemoving)
                   {
                      plugin.sendSyncChatMessage(player, "§aForen-Account §f" + resp + " §aerstellt!\n" +
                            "Link zum Forum: §f" + CCAuth.forumURL);

@@ -7,7 +7,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 public class CCAEntityListener implements Listener
 {
@@ -139,7 +138,7 @@ public class CCAEntityListener implements Listener
    }
 
    //================================================================================================
-   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+   /*@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
    public void onPlayerJoinEvent(PlayerJoinEvent e)
    {
       if(!cHandler.getPlayerListFile().isSet("uuids." + plugin.getUUIDbyBukkit(e.getPlayer().getName()) + ".forumUserName"))
@@ -149,7 +148,7 @@ public class CCAEntityListener implements Listener
                "§f 1x " + CCAuth.forumRegisterPayItem + "§e.";
          schedHandler.sendMessageDelayed(e.getPlayer(), message, 5L);
       }
-   }
+   }*/
 
    public boolean validEmailFormat(String emailStr)
    {

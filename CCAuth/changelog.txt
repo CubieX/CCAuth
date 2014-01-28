@@ -1,5 +1,7 @@
 Changelog for CCAuth by CubieX
 ------------------------------
+V.0.1.1
+- added list for forumRegisterPayItems instead of single item to register in forum
 
 V.0.1.0
 - config comment changes
