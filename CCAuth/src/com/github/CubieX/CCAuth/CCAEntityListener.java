@@ -73,8 +73,8 @@ public class CCAEntityListener implements Listener
                if(validEmailFormat(cmdTokens[4])) // valid eMail address format?
                {
                   // Encrypt all entries to avoid logging or showing these data tokens in plain text
-                  String encryptedForumUserName = plugin.encrypt(cmdTokens[1]); // no HTML escaping for name and PW because forum takes care oon account creation
-                  String encryptedForumPW = plugin.encrypt(cmdTokens[2]);
+                  String encryptedForumUserName = plugin.encrypt(plugin.escapeHTML(cmdTokens[1]));
+                  String encryptedForumPW = plugin.encrypt(plugin.escapeHTML(cmdTokens[2]));
                   String encryptedEmail = plugin.encrypt(cmdTokens[4]);
 
                   if ((null != encryptedForumUserName) && (encryptedForumUserName.length() > 0)
@@ -108,7 +108,7 @@ public class CCAEntityListener implements Listener
          {
             e.setCancelled(true);
             e.getPlayer().sendMessage("§cKommando blockiert. Bitte in der Form:\n" +
-                  "§f'/register Freischaltcode Foren-Name Foren-Passwort Foren-Passwort eMail" +
+                  "§f'/register Freischaltcode Foren-Name Foren-Passwort Foren-Passwort eMail " +
                   "§ceingeben!");
          }
       }

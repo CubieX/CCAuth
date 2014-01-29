@@ -250,7 +250,7 @@ public class CCAHTTPHandler
                   {
                      player.sendMessage("§cFehler beim Entfernen des Bezahl-Items fuer die Forenaccount-Erstellung!\n" +
                            "Bitte melde das einem Admin!");
-                  }                  
+                  }
                }
                else
                {
