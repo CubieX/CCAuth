@@ -2,7 +2,7 @@ name: CCAuth
 main: com.github.CubieX.CCAuth.CCAuth
 author: CubieX
 softdepend: [PermissionsEx, zPermissions, bPermissions, PermissionsBukkit]
-version: 0.1.0
+version: 0.1.2
 description: Validate player on server by forum account credentials on remote DB
 
 commands:

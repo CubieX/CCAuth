@@ -32,9 +32,9 @@ forumURL: 'http://www.myforumURL.com'
 #
 # Items to pay for forum registration (player must have these in inventory when issuing /register command)
 # e.g.
-# DIAMOND:1
-# STONE:1
+# DIAMOND@0:1 (1 normal diamond)
+# WOOL@11:1 (1 blue wool block)
 # or every other valid Bukkit Material name. Empty the list to deactivate.
 forumRegisterPayItems:
-  STONE: 1
-  WOOD: 1
+  STONE@0: 1
+  WOOD@0: 1

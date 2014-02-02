@@ -1,5 +1,8 @@
 Changelog for CCAuth by CubieX
 ------------------------------
+V.1.1.2
+- added support for item sub IDs for forum registration pay items
+
 V.0.1.1
 - added list for forumRegisterPayItems instead of single item to register in forum
 - fixed password formatting when using special chars as PW to match IP board cleanup procedue

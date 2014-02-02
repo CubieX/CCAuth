@@ -230,8 +230,11 @@ public class CCAHTTPHandler
 
                   for(String item : CCAuth.forumRegisterPayItems.keySet())
                   {
+                     String matDat[] = item.split("@");
+                     String mat = matDat[0];
+                     int subID = Integer.parseInt(matDat[1].split(":")[0]);
                      HashMap<Integer, ItemStack> couldNotRemove =
-                           player.getInventory().removeItem(new ItemStack(Material.getMaterial(item), CCAuth.forumRegisterPayItems.get(item)));
+                           player.getInventory().removeItem(new ItemStack(Material.getMaterial(mat), CCAuth.forumRegisterPayItems.get(item), (short)subID));
 
                      if(!couldNotRemove.isEmpty())
                      {

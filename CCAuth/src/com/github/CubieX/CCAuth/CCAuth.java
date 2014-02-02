@@ -120,11 +120,12 @@ public class CCAuth extends JavaPlugin
 
       if(getConfig().contains("forumRegisterPayItems"))
       {
+         forumRegisterPayItems.clear();
          Set<String> payItems = getConfig().getConfigurationSection("forumRegisterPayItems").getKeys(false);
 
          for (String key : payItems)
-         {
-            if(null != Material.getMaterial(key))
+         {            
+            if(null != Material.getMaterial(key.split("@")[0])) // valid material? // TODO also check subID
             {
                if(getConfig().isSet("forumRegisterPayItems." + key))
                {
@@ -304,8 +305,8 @@ public class CCAuth extends JavaPlugin
    /** Get players UUID from Bukkit (use only if player is online)
     * Used for parameters of PHP scripts for example.
     * 
-    * @param text The text to escape.
-    * @return text The escaped text
+    * @param playerName The players name to get the UUID from
+    * @return uuid The UUID of th player
     * */
    public String getUUIDbyBukkit(String playerName)
    {

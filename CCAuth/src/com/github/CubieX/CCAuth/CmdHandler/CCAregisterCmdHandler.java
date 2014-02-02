@@ -104,7 +104,8 @@ public class CCAregisterCmdHandler implements CommandExecutor
          
          for(String item : CCAuth.forumRegisterPayItems.keySet())
          {
-            list += CCAuth.forumRegisterPayItems.get(item) + "x " + item + "\n";
+            String mat = item.split("@")[0];
+            list += "§a" + CCAuth.forumRegisterPayItems.get(item) + "§fx " + mat + "§a" + item.substring(mat.length()).replace("@", " : ") + "§f\n";
          }
       }
       
@@ -119,7 +120,12 @@ public class CCAregisterCmdHandler implements CommandExecutor
       {  
          for(String item : CCAuth.forumRegisterPayItems.keySet())
          {
-            if(!inv.containsAtLeast(new ItemStack(Material.getMaterial(item)), CCAuth.forumRegisterPayItems.get(item)))
+            String matDat[] = item.split("@");
+            String mat = matDat[0];
+            int subID = Integer.parseInt(matDat[1].split(":")[0]);
+            
+            if(!inv.containsAtLeast(new ItemStack(Material.getMaterial(mat), CCAuth.forumRegisterPayItems.get(item), (short)subID),
+                  CCAuth.forumRegisterPayItems.get(item)))
             {
                res = false;
                break;
