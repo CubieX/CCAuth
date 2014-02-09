@@ -220,7 +220,7 @@ public class CCAHTTPHandler
 
                if(CCAuth.debug){CCAuth.log.info("DEBUG PHP Response: " + resp);}
 
-               if(!(resp.isEmpty()) && (!resp.contains("Warning")))
+               if((!resp.isEmpty()) && (!resp.contains("Warning")))
                {
                   boolean successRemoving = true;
 

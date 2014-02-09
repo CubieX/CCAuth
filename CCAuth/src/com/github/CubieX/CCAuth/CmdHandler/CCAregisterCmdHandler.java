@@ -20,7 +20,7 @@ public class CCAregisterCmdHandler implements CommandExecutor
    private CCAConfigHandler cHandler = null;
    private String wrongParamCountMsg = "§eFalsche Parameteranzahl.\n" +
          "Bitte in der Form:\n" +
-         "§f'/register Freischaltcode Foren-Name Foren-Passwort Foren-Passwort eMail\n" +
+         "§f'/register Foren-Name Foren-Passwort Foren-Passwort eMail\n" +
          "§eeingeben!";
 
    public CCAregisterCmdHandler(CCAuth plugin, CCAHTTPHandler httpHandler, CCAConfigHandler cHandler) 
